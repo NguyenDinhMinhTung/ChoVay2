@@ -2,7 +2,10 @@ package com.example.megas.chovay;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +17,7 @@ import com.example.megas.chovay.DTO.PeopleDTO;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class AddLoanActivity extends AppCompatActivity implements View.OnClickListener {
     AutoCompleteTextView txtName;
@@ -23,6 +27,8 @@ public class AddLoanActivity extends AppCompatActivity implements View.OnClickLi
 
     LoanDAO loanDAO;
     PeopleDAO peopleDAO;
+
+    List<PeopleDTO> peopleDTOList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +50,25 @@ public class AddLoanActivity extends AppCompatActivity implements View.OnClickLi
 
         loanDAO = new LoanDAO(this);
         peopleDAO = new PeopleDAO(this);
+
+        peopleDTOList= (List<PeopleDTO>) getIntent().getSerializableExtra("people_name_list");
+    }
+
+    private String[] listToStringArray(List<PeopleDTO> list){
+        String[] result=new String[list.size()];
+
+        for (int i=0;i<list.size();i++){
+            result[i]=list.get(i).getName();
+        }
+
+        return result;
     }
 
     private void setEvent() {
         btnAdd.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
+
+        txtName.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listToStringArray(peopleDTOList)));
     }
 
     @Override

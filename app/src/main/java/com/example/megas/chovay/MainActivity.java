@@ -16,6 +16,7 @@ import com.example.megas.chovay.DAO.PeopleDAO;
 import com.example.megas.chovay.DTO.LoanDTO;
 import com.example.megas.chovay.DTO.PeopleDTO;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RecyclerView lstMainLoan;
     MainLoanAdapter mainLoanAdapter;
     List<List<LoanDTO>> loanDTOList;
+    List<PeopleDTO> peopleDTOList;
     TextView txtSum;
 
     FloatingActionButton fabAdd;
@@ -36,13 +38,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         setVar();
-        setEvent();
-
         generateList();
+        setEvent();
     }
 
     private void generateList() {
-        List<PeopleDTO> peopleDTOList = peopleDAO.getListPeople();
+        peopleDTOList = peopleDAO.getListPeople();
         loanDTOList = new ArrayList<>();
 
         for (PeopleDTO peopleDTO : peopleDTOList) {
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             loanDTOList.add(list);
         }
 
-        mainLoanAdapter = new MainLoanAdapter(loanDTOList, peopleDTOList);
+        mainLoanAdapter = new MainLoanAdapter(loanDTOList, peopleDTOList,this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
 
         layoutManager.setOrientation(LinearLayout.VERTICAL);
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (id) {
             case R.id.fabAddMainLoan:
                 Intent intent = new Intent(this, AddLoanActivity.class);
+                intent.putExtra("people_name_list", (Serializable) peopleDTOList);
                 startActivity(intent);
 
                 break;

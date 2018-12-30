@@ -1,6 +1,8 @@
 package com.example.megas.chovay.DTO;
 
-public class LoanDTO {
+import java.io.Serializable;
+
+public class LoanDTO implements Serializable {
     int id;
     int peopleId;
     int amount;

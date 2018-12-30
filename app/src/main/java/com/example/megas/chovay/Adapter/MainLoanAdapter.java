@@ -1,5 +1,7 @@
 package com.example.megas.chovay.Adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,18 +13,22 @@ import android.widget.TextView;
 
 import com.example.megas.chovay.DTO.LoanDTO;
 import com.example.megas.chovay.DTO.PeopleDTO;
+import com.example.megas.chovay.DetailLoanActivity;
 import com.example.megas.chovay.R;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLoanAdapterViewHolder> {
 
     List<List<LoanDTO>> loanDTOList;
     List<PeopleDTO> peopleDTOList;
+    Context context;
 
-    public MainLoanAdapter(List<List<LoanDTO>> loanDTOList, List<PeopleDTO> peopleDTOList) {
+    public MainLoanAdapter(List<List<LoanDTO>> loanDTOList, List<PeopleDTO> peopleDTOList, Context context) {
         this.loanDTOList = loanDTOList;
         this.peopleDTOList = peopleDTOList;
+        this.context = context;
     }
 
     @NonNull
@@ -36,15 +42,25 @@ public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLo
 
     @Override
     public void onBindViewHolder(@NonNull MainLoanAdapterViewHolder mainLoanAdapterViewHolder, int i) {
-        List<LoanDTO> lstLoanDTO = loanDTOList.get(i);
-        PeopleDTO peopleDTO=peopleDTOList.get(i);
+        final List<LoanDTO> lstLoanDTO = loanDTOList.get(i);
+        PeopleDTO peopleDTO = peopleDTOList.get(i);
 
         if (lstLoanDTO.size() > 0) {
-            int amount=getSum(lstLoanDTO);
+            int amount = getSum(lstLoanDTO);
 
             mainLoanAdapterViewHolder.txtName.setText(peopleDTO.getName());
             mainLoanAdapterViewHolder.txtAmount.setText(amount + "円");
             mainLoanAdapterViewHolder.checkBox.setChecked(false);
+
+            mainLoanAdapterViewHolder.layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, DetailLoanActivity.class);
+                    intent.putExtra("list", (Serializable) lstLoanDTO);
+
+                    context.startActivity(intent);
+                }
+            });
         } else {
             mainLoanAdapterViewHolder.layout.setVisibility(View.GONE);
         }
