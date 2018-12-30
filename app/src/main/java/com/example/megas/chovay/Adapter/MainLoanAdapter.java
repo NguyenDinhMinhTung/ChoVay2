@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,10 +26,14 @@ public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLo
     List<PeopleDTO> peopleDTOList;
     Context context;
 
+    public Boolean[] checkBoxState;
+
     public MainLoanAdapter(List<List<LoanDTO>> loanDTOList, List<PeopleDTO> peopleDTOList, Context context) {
         this.loanDTOList = loanDTOList;
         this.peopleDTOList = peopleDTOList;
         this.context = context;
+
+        checkBoxState = new Boolean[loanDTOList.size()];
     }
 
     @NonNull
@@ -41,29 +46,34 @@ public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainLoanAdapterViewHolder mainLoanAdapterViewHolder, int i) {
+    public void onBindViewHolder(@NonNull MainLoanAdapterViewHolder mainLoanAdapterViewHolder, final int i) {
         final List<LoanDTO> lstLoanDTO = loanDTOList.get(i);
         PeopleDTO peopleDTO = peopleDTOList.get(i);
 
-        if (lstLoanDTO.size() > 0) {
-            int amount = getSum(lstLoanDTO);
+        checkBoxState[i] = false;
 
-            mainLoanAdapterViewHolder.txtName.setText(peopleDTO.getName());
-            mainLoanAdapterViewHolder.txtAmount.setText(amount + "円");
-            mainLoanAdapterViewHolder.checkBox.setChecked(false);
+        int amount = getSum(lstLoanDTO);
 
-            mainLoanAdapterViewHolder.layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, DetailLoanActivity.class);
-                    intent.putExtra("list", (Serializable) lstLoanDTO);
+        mainLoanAdapterViewHolder.txtName.setText(peopleDTO.getName());
+        mainLoanAdapterViewHolder.txtAmount.setText(amount + "円");
+        mainLoanAdapterViewHolder.checkBox.setChecked(false);
 
-                    context.startActivity(intent);
-                }
-            });
-        } else {
-            mainLoanAdapterViewHolder.layout.setVisibility(View.GONE);
-        }
+        mainLoanAdapterViewHolder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DetailLoanActivity.class);
+                intent.putExtra("list", (Serializable) lstLoanDTO);
+
+                context.startActivity(intent);
+            }
+        });
+
+        mainLoanAdapterViewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                checkBoxState[i] = isChecked;
+            }
+        });
     }
 
     public int getSum(List<LoanDTO> loanDTOList) {

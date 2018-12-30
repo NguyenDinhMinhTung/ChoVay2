@@ -107,4 +107,28 @@ public class LoanDAO {
 
         return loanDTOList;
     }
+
+    public void setPaidByPeopleId(int peopleId) {
+        String query = "SELECT " + Database.TB_LOAN_ID + " FROM " + Database.TB_LOAN + " WHERE " + Database.TB_LOAN_PEOPLEID + "=" + peopleId +
+                " AND " + Database.TB_LOAN_STATUS + "= 0";
+        Cursor cursor = database.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast()) {
+            int loanId = cursor.getInt(cursor.getColumnIndex(Database.TB_LOAN_ID));
+
+            setPaidByLoanId(loanId);
+
+            cursor.moveToNext();
+        }
+    }
+
+    public void setPaidByLoanId(int loanId) {
+//        String q = "UPDATE " + Database.TB_LOAN + " SET " + Database.TB_LOAN_STATUS + "=1 WHERE " + Database.TB_LOAN_ID + "=" + loanId;
+//        database.rawQuery(q, null);
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Database.TB_LOAN_STATUS, 1);
+        database.update(Database.TB_LOAN, contentValues, Database.TB_LOAN_ID + "=" + loanId, null);
+    }
 }

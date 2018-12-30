@@ -51,7 +51,7 @@ public class AddLoanActivity extends AppCompatActivity implements View.OnClickLi
         loanDAO = new LoanDAO(this);
         peopleDAO = new PeopleDAO(this);
 
-        peopleDTOList= (List<PeopleDTO>) getIntent().getSerializableExtra("people_name_list");
+        peopleDTOList= peopleDAO.getListPeople();
     }
 
     private String[] listToStringArray(List<PeopleDTO> list){

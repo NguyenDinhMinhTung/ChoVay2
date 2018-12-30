@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     LoanDAO loanDAO;
     PeopleDAO peopleDAO;
 
+    Button btnPaid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +49,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         peopleDTOList = peopleDAO.getListPeople();
         loanDTOList = new ArrayList<>();
 
-        for (PeopleDTO peopleDTO : peopleDTOList) {
+        for (int i = 0; i < peopleDTOList.size(); i++) {
+            PeopleDTO peopleDTO = peopleDTOList.get(i);
+
             List<LoanDTO> list = loanDAO.getListLoanByPeopleId(peopleDTO.getId(), 0);
-            loanDTOList.add(list);
+            if (list.size() > 0)
+                loanDTOList.add(list);
+            else {
+                peopleDTOList.remove(peopleDTO);
+                i--;
+            }
         }
 
-        mainLoanAdapter = new MainLoanAdapter(loanDTOList, peopleDTOList,this);
+        mainLoanAdapter = new MainLoanAdapter(loanDTOList, peopleDTOList, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
 
         layoutManager.setOrientation(LinearLayout.VERTICAL);
@@ -70,13 +80,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sum += loanDTO.getAmount();
             }
         }
-        txtSum.setText("合計：" + sum+"円");
+        txtSum.setText("合計：" + sum + "円");
     }
 
     private void setVar() {
         lstMainLoan = findViewById(R.id.lstMainLoan);
         fabAdd = findViewById(R.id.fabAddMainLoan);
         txtSum = findViewById(R.id.txtSumMainLoan);
+        btnPaid = findViewById(R.id.btnPaidMainLoan);
 
         loanDAO = new LoanDAO(this);
         peopleDAO = new PeopleDAO(this);
@@ -84,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setEvent() {
         fabAdd.setOnClickListener(this);
+        btnPaid.setOnClickListener(this);
     }
 
     @Override
@@ -93,9 +105,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (id) {
             case R.id.fabAddMainLoan:
                 Intent intent = new Intent(this, AddLoanActivity.class);
-                intent.putExtra("people_name_list", (Serializable) peopleDTOList);
                 startActivity(intent);
+                break;
 
+            case R.id.btnPaidMainLoan:
+                for (int i = 0; i < mainLoanAdapter.checkBoxState.length; i++) {
+                    if (mainLoanAdapter.checkBoxState[i]) {
+                        loanDAO.setPaidByPeopleId(peopleDTOList.get(i).getId());
+                    }
+                }
+
+                generateList();
                 break;
         }
     }
