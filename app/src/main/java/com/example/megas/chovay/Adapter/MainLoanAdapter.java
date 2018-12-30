@@ -48,7 +48,7 @@ public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLo
     @Override
     public void onBindViewHolder(@NonNull MainLoanAdapterViewHolder mainLoanAdapterViewHolder, final int i) {
         final List<LoanDTO> lstLoanDTO = loanDTOList.get(i);
-        PeopleDTO peopleDTO = peopleDTOList.get(i);
+        final PeopleDTO peopleDTO = peopleDTOList.get(i);
 
         checkBoxState[i] = false;
 
@@ -63,6 +63,7 @@ public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLo
             public void onClick(View v) {
                 Intent intent = new Intent(context, DetailLoanActivity.class);
                 intent.putExtra("list", (Serializable) lstLoanDTO);
+                intent.putExtra("name",peopleDTO.getName());
 
                 context.startActivity(intent);
             }

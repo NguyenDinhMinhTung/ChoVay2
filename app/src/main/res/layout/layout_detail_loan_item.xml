@@ -35,7 +35,8 @@
         android:layout_alignParentRight="true"
         android:text="10000"
         android:textSize="20sp"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:textStyle="bold"/>
 
     <LinearLayout
         android:layout_width="match_parent"
