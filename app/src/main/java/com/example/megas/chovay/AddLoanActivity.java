@@ -9,7 +9,11 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.example.megas.chovay.DAO.GroupDAO;
 import com.example.megas.chovay.DAO.LoanDAO;
 import com.example.megas.chovay.DAO.PeopleDAO;
 import com.example.megas.chovay.DTO.LoanDTO;
@@ -19,14 +23,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class AddLoanActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddLoanActivity extends AppCompatActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
     AutoCompleteTextView txtName;
     EditText txtAmount, txtNote;
 
     Button btnAdd, btnCancel;
 
+    RadioGroup radioGroup;
+
+    Spinner spnGroupName;
+
     LoanDAO loanDAO;
     PeopleDAO peopleDAO;
+    GroupDAO groupDAO;
 
     List<PeopleDTO> peopleDTOList;
 
@@ -48,8 +57,13 @@ public class AddLoanActivity extends AppCompatActivity implements View.OnClickLi
         btnAdd = findViewById(R.id.btnAddAddLoan);
         btnCancel = findViewById(R.id.btnCancelAddLoan);
 
+        spnGroupName=findViewById(R.id.spnGroupNameAddLoan);
+
+        radioGroup=findViewById(R.id.radioGroupAddLoan);
+
         loanDAO = new LoanDAO(this);
         peopleDAO = new PeopleDAO(this);
+        groupDAO=new GroupDAO(this);
 
         peopleDTOList= peopleDAO.getListPeople();
     }
@@ -67,6 +81,8 @@ public class AddLoanActivity extends AppCompatActivity implements View.OnClickLi
     private void setEvent() {
         btnAdd.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
+
+        radioGroup.setOnCheckedChangeListener(this);
 
         txtName.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listToStringArray(peopleDTOList)));
     }
@@ -92,6 +108,20 @@ public class AddLoanActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.btnCancelAddLoan:
                 finish();
+                break;
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+        int checkedRadioId=radioGroup.getCheckedRadioButtonId();
+
+        switch (checkedRadioId){
+            case R.id.rdbPeopleAddLoan:
+
+                break;
+
+            case R.id.rdbGroupAddLoan:
                 break;
         }
     }
