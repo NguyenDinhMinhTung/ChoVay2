@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AddLoanActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="#242424">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/line_thick"
+            android:layout_marginBottom="@dimen/line_thick"
+            android:background="@color/white"
+            android:text="名前: "
+            android:textSize="17dp"
+            android:padding="10dp"/>
+
+        <AutoCompleteTextView
+            android:id="@+id/txtNameAddLoan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/line_thick"
+            android:layout_marginTop="@dimen/line_thick"
+            android:layout_marginBottom="@dimen/line_thick"
+            android:background="@color/white"
+            android:textSize="17dp"
+            android:paddingLeft="10dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#242424">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/line_thick"
+            android:background="@color/white"
+            android:text="グループ: "
+            android:textSize="17dp"
+            android:padding="10dp"/>
+
+        <AutoCompleteTextView
+            android:id="@+id/txtGroupAddLoan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/line_thick"
+            android:layout_marginBottom="@dimen/line_thick"
+            android:background="@color/white"
+
+            android:textSize="17dp"
+            android:paddingLeft="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#242424">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/line_thick"
+            android:background="@color/white"
+            android:text="金額: "
+            android:textSize="17dp"
+            android:padding="10dp"/>
+
+        <EditText
+            android:id="@+id/txtAmountAddLoan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/line_thick"
+            android:layout_marginBottom="@dimen/line_thick"
+            android:background="@color/white"
+            android:textSize="17dp"
+            android:paddingLeft="10dp"
+            android:inputType="number"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#242424">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/line_thick"
+            android:background="@color/white"
+            android:text="コメント: "
+            android:textSize="17dp"
+            android:padding="10dp"/>
+
+        <EditText
+            android:id="@+id/txtNoteAddLoan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/line_thick"
+            android:layout_marginBottom="@dimen/line_thick"
+            android:background="@color/white"
+            android:textSize="17dp"
+            android:paddingLeft="10dp" />
+    </LinearLayout>
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_margin="10dp">
+       <Button
+           android:id="@+id/btnAddAddLoan"
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:text="追加"
+           android:textColor="@color/white"
+           android:background="@drawable/button_green"
+           android:layout_weight="1"/>
+
+       <Button
+           android:id="@+id/btnCancelAddLoan"
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:text="キャンセル"
+           android:layout_weight="1"/>
+   </LinearLayout>
+
+</LinearLayout>

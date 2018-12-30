@@ -1,10 +1,14 @@
 package com.example.megas.chovay;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.megas.chovay.Adapter.MainLoanAdapter;
 import com.example.megas.chovay.DAO.LoanDAO;
@@ -15,11 +19,13 @@ import com.example.megas.chovay.DTO.PeopleDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView lstMainLoan;
     MainLoanAdapter mainLoanAdapter;
-    List<MainLoanItem> mainLoanItemList;
     List<List<LoanDTO>> loanDTOList;
+    TextView txtSum;
+
+    FloatingActionButton fabAdd;
 
     LoanDAO loanDAO;
     PeopleDAO peopleDAO;
@@ -30,23 +36,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setVar();
-
-        //loanDAO.addLoan(new LoanDTO(0, 1, 10000, 0, "", "TIEN NUOC"));
-        //loanDAO.addLoan(new LoanDTO(0, 2, 1230, 0, "", "dsd"));
+        setEvent();
 
         generateList();
-
-//        peopleDAO.addPeople(new PeopleDTO(0, "TUNG", -1));
-//        peopleDAO.addPeople(new PeopleDTO(0, "HIEU", -1));
     }
 
     private void generateList() {
         List<PeopleDTO> peopleDTOList = peopleDAO.getListPeople();
-        loanDTOList=new ArrayList<>();
+        loanDTOList = new ArrayList<>();
 
         for (PeopleDTO peopleDTO : peopleDTOList) {
-                List<LoanDTO> list=loanDAO.getListLoanByPeopleId(peopleDTO.getId(),0);
-                loanDTOList.add(list);
+            List<LoanDTO> list = loanDAO.getListLoanByPeopleId(peopleDTO.getId(), 0);
+            loanDTOList.add(list);
         }
 
         mainLoanAdapter = new MainLoanAdapter(loanDTOList, peopleDTOList);
@@ -56,12 +57,51 @@ public class MainActivity extends AppCompatActivity {
 
         lstMainLoan.setLayoutManager(layoutManager);
         lstMainLoan.setAdapter(mainLoanAdapter);
+
+        setSum();
+    }
+
+    private void setSum() {
+        int sum = 0;
+
+        for (List<LoanDTO> listLoan : loanDTOList) {
+            for (LoanDTO loanDTO : listLoan) {
+                sum += loanDTO.getAmount();
+            }
+        }
+        txtSum.setText("合計：" + sum+"円");
     }
 
     private void setVar() {
         lstMainLoan = findViewById(R.id.lstMainLoan);
+        fabAdd = findViewById(R.id.fabAddMainLoan);
+        txtSum = findViewById(R.id.txtSumMainLoan);
 
         loanDAO = new LoanDAO(this);
         peopleDAO = new PeopleDAO(this);
+    }
+
+    private void setEvent() {
+        fabAdd.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+
+        switch (id) {
+            case R.id.fabAddMainLoan:
+                Intent intent = new Intent(this, AddLoanActivity.class);
+                startActivity(intent);
+
+                break;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        generateList();
     }
 }

@@ -19,13 +19,21 @@ public class PeopleDAO {
         database = data.open();
     }
 
-    public void addPeople(PeopleDTO peopleDTO) {
+    public int addPeople(PeopleDTO peopleDTO) {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(Database.TB_PEOPLE_GROUPID, peopleDTO.getGroupId());
         contentValues.put(Database.TB_PEOPLE_NAME, peopleDTO.getName());
 
         database.insert(Database.TB_PEOPLE, null, contentValues);
+
+        String query = "SELECT * FROM " + Database.TB_PEOPLE + " ORDER BY " + Database.TB_PEOPLE_ID + " DESC LIMIT 1";
+        Cursor cursor = database.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        int id=cursor.getInt(cursor.getColumnIndex(Database.TB_PEOPLE_ID));
+
+        return id;
     }
 
     public List<PeopleDTO> getListPeople() {
@@ -49,13 +57,13 @@ public class PeopleDAO {
         return peopleDTOList;
     }
 
-    public Boolean isPeopleExists(String name) {
+    public int isPeopleExists(String name) {
         List<PeopleDTO> peopleDTOList = getListPeople();
 
         for (PeopleDTO people : peopleDTOList) {
-            if (people.getName().equals(name)) return true;
+            if (people.getName().equals(name)) return people.getId();
         }
 
-        return false;
+        return -1;
     }
 }
