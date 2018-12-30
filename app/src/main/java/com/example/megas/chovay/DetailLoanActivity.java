@@ -36,7 +36,7 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_detail_loan);
 
         String name =getIntent().getStringExtra("name");
-        
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(name);
 

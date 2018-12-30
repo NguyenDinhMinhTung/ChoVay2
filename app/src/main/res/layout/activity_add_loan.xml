@@ -123,7 +123,7 @@
            android:text="追加"
            android:textColor="@color/white"
            android:background="@drawable/button_green"
-           android:layout_weight="1"/>
+           android:layout_weight="2"/>
 
        <Button
            android:id="@+id/btnCancelAddLoan"
