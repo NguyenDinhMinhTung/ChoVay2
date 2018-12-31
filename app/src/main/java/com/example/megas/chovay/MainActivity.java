@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int sum = 0;
 
         for (int i = 0; i < mainLoanAdapter.checkBoxState.length; i++) {
-            if (mainLoanAdapter.checkBoxState[i]) {
+            if (mainLoanAdapter.checkBoxState[i] != null && mainLoanAdapter.checkBoxState[i]) {
                 sum += mainLoanAdapter.sum[i];
             }
         }
@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
 
         generateList();
+        refreshPay();
     }
 
     @Override

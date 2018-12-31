@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.megas.chovay.DAO.GroupDAO;
 import com.example.megas.chovay.DAO.LoanDAO;
@@ -55,12 +56,12 @@ public class AddLoanActivity extends AppCompatActivity implements View.OnClickLi
 
         setVar();
 
-       checkIsEdit();
+        checkIsEdit();
 
         setEvent();
     }
 
-    private void checkIsEdit(){
+    private void checkIsEdit() {
         isEdit = getIntent().getBooleanExtra("isEdit", false);
 
         if (isEdit) {
@@ -91,8 +92,8 @@ public class AddLoanActivity extends AppCompatActivity implements View.OnClickLi
         spnGroupName.setEnabled(false);
 
         radioGroup = findViewById(R.id.radioGroupAddLoan);
-        rdbGroup=findViewById(R.id.rdbGroupAddLoan);
-        rdbPeople=findViewById(R.id.rdbPeopleAddLoan);
+        rdbGroup = findViewById(R.id.rdbGroupAddLoan);
+        rdbPeople = findViewById(R.id.rdbPeopleAddLoan);
 
         loanDAO = new LoanDAO(this);
         peopleDAO = new PeopleDAO(this);
@@ -121,30 +122,39 @@ public class AddLoanActivity extends AppCompatActivity implements View.OnClickLi
 
         switch (viewId) {
             case R.id.btnAddAddLoan:
-                int amount = Integer.parseInt(txtAmount.getText().toString());
-                String note = txtNote.getText().toString();
 
-                if (isEdit) {
-                    loanDAO.update(loanId, amount, note);
+                if (isRadioButtonPeopleSelected && txtName.getText().toString().isEmpty()) {
+                    Toast.makeText(this, "名前を入力してください", Toast.LENGTH_SHORT).show();
 
-                } else if (isRadioButtonPeopleSelected) {
-                    String name = txtName.getText().toString();
-                    int peopleId = peopleDAO.isPeopleExists(name);
+                } else if (txtAmount.getText().toString().isEmpty()) {
+                    Toast.makeText(this, "金額を入力してください", Toast.LENGTH_SHORT).show();
 
-                    if (peopleId < 0) {
-                        peopleId = peopleDAO.addPeople(new PeopleDTO(0, name, -1));
-                    }
-
-                    loanDAO.addLoan(new LoanDTO(0, peopleId, amount, 0, Calendar.getInstance().getTime().toString(), note));
                 } else {
-                    GroupDTO groupDTO = groupDTOList.get(spnGroupName.getSelectedItemPosition());
-                    List<PeopleDTO> list = peopleDAO.getListPeopleByGroupId(groupDTO.getId());
+                    int amount = Integer.parseInt(txtAmount.getText().toString());
+                    String note = txtNote.getText().toString();
 
-                    for (PeopleDTO peopleDTO : list) {
-                        loanDAO.addLoan(new LoanDTO(0, peopleDTO.getId(), amount, 0, Calendar.getInstance().getTime().toString(), note));
+                    if (isEdit) {
+                        loanDAO.update(loanId, amount, note);
+
+                    } else if (isRadioButtonPeopleSelected) {
+                        String name = txtName.getText().toString();
+                        int peopleId = peopleDAO.isPeopleExists(name);
+
+                        if (peopleId < 0) {
+                            peopleId = peopleDAO.addPeople(new PeopleDTO(0, name, -1));
+                        }
+
+                        loanDAO.addLoan(new LoanDTO(0, peopleId, amount, 0, Calendar.getInstance().getTime().toString(), note));
+                    } else {
+                        GroupDTO groupDTO = groupDTOList.get(spnGroupName.getSelectedItemPosition());
+                        List<PeopleDTO> list = peopleDAO.getListPeopleByGroupId(groupDTO.getId());
+
+                        for (PeopleDTO peopleDTO : list) {
+                            loanDAO.addLoan(new LoanDTO(0, peopleDTO.getId(), amount, 0, Calendar.getInstance().getTime().toString(), note));
+                        }
                     }
+                    finish();
                 }
-                finish();
                 break;
 
             case R.id.btnCancelAddLoan:

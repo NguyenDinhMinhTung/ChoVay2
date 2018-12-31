@@ -68,7 +68,7 @@ public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLo
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, DetailLoanActivity.class);
-                intent.putExtra("list", (Serializable) lstLoanDTO);
+                intent.putExtra("peopleId", peopleDTO.getId());
                 intent.putExtra("name", peopleDTO.getName());
 
                 context.startActivity(intent);

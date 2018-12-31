@@ -30,6 +30,8 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
 
     LoanDAO loanDAO;
 
+    int peopleId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +56,7 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
 
         loanDAO = new LoanDAO(this);
 
-        loanDTOList = (List<LoanDTO>) getIntent().getSerializableExtra("list");
+        peopleId = getIntent().getIntExtra("peopleId", 0);
     }
 
     private void setEvent() {
@@ -64,7 +66,7 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
     public void refreshPay() {
         int sum = 0;
         for (int i = 0; i < detailLoanAdapter.checkBoxState.length; i++) {
-            if (detailLoanAdapter.checkBoxState[i]) {
+            if (detailLoanAdapter.checkBoxState[i] != null && detailLoanAdapter.checkBoxState[i]) {
                 sum += loanDTOList.get(i).getAmount();
             }
         }
@@ -79,6 +81,7 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
 
     private void generateList() {
 
+        loanDTOList = loanDAO.getListLoanByPeopleId(peopleId, 0);
         detailLoanAdapter = new DetailLoanAdapter(this, loanDTOList, new DetailLoanAdapter.Action() {
             @Override
             public void RefreshPay() {
@@ -113,7 +116,7 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
         switch (viewId) {
             case R.id.btnPaidDetailLoan:
                 for (int i = 0; i < detailLoanAdapter.checkBoxState.length; i++) {
-                    if (detailLoanAdapter.checkBoxState[i]) {
+                    if (detailLoanAdapter.checkBoxState[i] != null && detailLoanAdapter.checkBoxState[i]) {
                         loanDAO.setPaidByLoanId(loanDTOList.get(i).getId());
                         loanDTOList.remove(i);
                     }
@@ -140,5 +143,6 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
         super.onResume();
 
         generateList();
+        refreshPay();
     }
 }
