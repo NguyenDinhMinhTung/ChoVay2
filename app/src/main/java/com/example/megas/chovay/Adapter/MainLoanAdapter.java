@@ -19,6 +19,7 @@ import com.example.megas.chovay.R;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLoanAdapterViewHolder> {
 
@@ -26,14 +27,19 @@ public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLo
     List<PeopleDTO> peopleDTOList;
     Context context;
 
-    public Boolean[] checkBoxState;
+    Action action;
 
-    public MainLoanAdapter(List<List<LoanDTO>> loanDTOList, List<PeopleDTO> peopleDTOList, Context context) {
+    public Boolean[] checkBoxState;
+    public int[] sum;
+
+    public MainLoanAdapter(List<List<LoanDTO>> loanDTOList, List<PeopleDTO> peopleDTOList, Context context, Action action) {
         this.loanDTOList = loanDTOList;
         this.peopleDTOList = peopleDTOList;
         this.context = context;
+        this.action = action;
 
         checkBoxState = new Boolean[loanDTOList.size()];
+        sum = new int[loanDTOList.size()];
     }
 
     @NonNull
@@ -52,10 +58,10 @@ public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLo
 
         checkBoxState[i] = false;
 
-        int amount = getSum(lstLoanDTO);
+        sum[i] = getSum(lstLoanDTO);
 
         mainLoanAdapterViewHolder.txtName.setText(peopleDTO.getName());
-        mainLoanAdapterViewHolder.txtAmount.setText(amount + "円");
+        mainLoanAdapterViewHolder.txtAmount.setText(sum[i] + "円");
         mainLoanAdapterViewHolder.checkBox.setChecked(false);
 
         mainLoanAdapterViewHolder.layout.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +69,7 @@ public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLo
             public void onClick(View v) {
                 Intent intent = new Intent(context, DetailLoanActivity.class);
                 intent.putExtra("list", (Serializable) lstLoanDTO);
-                intent.putExtra("name",peopleDTO.getName());
+                intent.putExtra("name", peopleDTO.getName());
 
                 context.startActivity(intent);
             }
@@ -73,6 +79,7 @@ public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLo
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 checkBoxState[i] = isChecked;
+                action.RefreshPay();
             }
         });
     }
@@ -106,5 +113,9 @@ public class MainLoanAdapter extends RecyclerView.Adapter<MainLoanAdapter.MainLo
             txtName = view.findViewById(R.id.txtPeopleNameMainLoanItem);
             txtAmount = view.findViewById(R.id.txtAmountMainLoanItem);
         }
+    }
+
+    public interface Action {
+        public void RefreshPay();
     }
 }

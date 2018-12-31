@@ -19,7 +19,10 @@
         <activity android:name=".AddLoanActivity" />
         <activity android:name=".DetailLoanActivity" />
         <activity android:name=".GroupManagerActivity" />
-        <activity android:theme="@style/Theme.AppCompat.Dialog" android:name=".AddActivity"></activity>
+        <activity
+            android:name=".AddActivity"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity android:name=".GroupDetailActivity"></activity>
     </application>
 
 </manifest>

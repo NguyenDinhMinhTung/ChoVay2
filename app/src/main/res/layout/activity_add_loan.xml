@@ -141,7 +141,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
 
         <Button
             android:id="@+id/btnAddAddLoan"
@@ -150,6 +152,7 @@
             android:layout_weight="2"
             android:background="@drawable/button_green"
             android:text="追加"
+            android:textSize="20dp"
             android:textColor="@color/white" />
 
         <Button

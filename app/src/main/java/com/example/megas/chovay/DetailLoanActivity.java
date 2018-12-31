@@ -35,7 +35,7 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_loan);
 
-        String name =getIntent().getStringExtra("name");
+        String name = getIntent().getStringExtra("name");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(name);
@@ -52,18 +52,40 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
         txtSum = findViewById(R.id.txtSumDetailLoan);
         btnPaid = findViewById(R.id.btnPaidDetailLoan);
 
-        loanDAO =new LoanDAO(this);
+        loanDAO = new LoanDAO(this);
 
         loanDTOList = (List<LoanDTO>) getIntent().getSerializableExtra("list");
     }
 
-    private void setEvent(){
+    private void setEvent() {
         btnPaid.setOnClickListener(this);
+    }
+
+    public void refreshPay() {
+        int sum = 0;
+        for (int i = 0; i < detailLoanAdapter.checkBoxState.length; i++) {
+            if (detailLoanAdapter.checkBoxState[i]) {
+                sum += loanDTOList.get(i).getAmount();
+            }
+        }
+
+        if (sum == 0)
+            btnPaid.setEnabled(false);
+        else
+            btnPaid.setEnabled(true);
+
+        btnPaid.setText("支払済み（" + sum + "円）");
     }
 
     private void generateList() {
 
-        detailLoanAdapter = new DetailLoanAdapter(loanDTOList);
+        detailLoanAdapter = new DetailLoanAdapter(this, loanDTOList, new DetailLoanAdapter.Action() {
+            @Override
+            public void RefreshPay() {
+                refreshPay();
+            }
+        });
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
 
         layoutManager.setOrientation(LinearLayout.VERTICAL);
@@ -86,29 +108,37 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        int viewId=v.getId();
+        int viewId = v.getId();
 
-        switch (viewId){
+        switch (viewId) {
             case R.id.btnPaidDetailLoan:
-                for (int i=0;i<detailLoanAdapter.checkBoxState.length;i++){
-                    if (detailLoanAdapter.checkBoxState[i]){
+                for (int i = 0; i < detailLoanAdapter.checkBoxState.length; i++) {
+                    if (detailLoanAdapter.checkBoxState[i]) {
                         loanDAO.setPaidByLoanId(loanDTOList.get(i).getId());
                         loanDTOList.remove(i);
                     }
                 }
 
                 generateList();
+                refreshPay();
                 break;
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        generateList();
     }
 }

@@ -63,7 +63,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        mainLoanAdapter = new MainLoanAdapter(loanDTOList, peopleDTOList, this);
+        mainLoanAdapter = new MainLoanAdapter(loanDTOList, peopleDTOList, this, new MainLoanAdapter.Action() {
+            @Override
+            public void RefreshPay() {
+                refreshPay();
+            }
+        });
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
 
         layoutManager.setOrientation(LinearLayout.VERTICAL);
@@ -72,6 +78,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lstMainLoan.setAdapter(mainLoanAdapter);
 
         setSum();
+    }
+
+    private void refreshPay() {
+        int sum = 0;
+
+        for (int i = 0; i < mainLoanAdapter.checkBoxState.length; i++) {
+            if (mainLoanAdapter.checkBoxState[i]) {
+                sum += mainLoanAdapter.sum[i];
+            }
+        }
+
+        if (sum == 0)
+            btnPaid.setEnabled(false);
+        else
+            btnPaid.setEnabled(true);
+
+        btnPaid.setText("支払済み（" + sum + "円）");
     }
 
     private void setSum() {
@@ -118,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 generateList();
+                refreshPay();
                 break;
         }
     }
@@ -131,15 +155,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu,menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.mnuGroup:
-                Intent intent=new Intent(this, GroupManagerActivity.class);
+                Intent intent = new Intent(this, GroupManagerActivity.class);
                 startActivity(intent);
                 break;
         }

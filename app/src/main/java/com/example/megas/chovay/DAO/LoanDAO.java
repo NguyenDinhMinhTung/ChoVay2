@@ -58,6 +58,23 @@ public class LoanDAO {
         return loanDTOList;
     }
 
+    public LoanDTO getLoanById(int loanId) {
+        String query = "SELECT * FROM " + Database.TB_LOAN + " WHERE " + Database.TB_LOAN_ID + "=" + loanId;
+        Cursor cursor = database.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        int peopleId = cursor.getInt(cursor.getColumnIndex(Database.TB_LOAN_PEOPLEID));
+        int amount = cursor.getInt(cursor.getColumnIndex(Database.TB_LOAN_AMOUNT));
+        int status = cursor.getInt(cursor.getColumnIndex(Database.TB_LOAN_STATUS));
+
+        String createdTime = cursor.getString(cursor.getColumnIndex(Database.TB_LOAN_CREATEDTIME));
+        String note = cursor.getString(cursor.getColumnIndex(Database.TB_LOAN_NOTE));
+
+        LoanDTO loanDTO = new LoanDTO(loanId, peopleId, amount, status, createdTime, note);
+
+        return loanDTO;
+    }
+
     public List<LoanDTO> getListLoanByPeopleId(int peopleId) {
         List<LoanDTO> loanDTOList = new ArrayList<>();
 
@@ -129,6 +146,14 @@ public class LoanDAO {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(Database.TB_LOAN_STATUS, 1);
+        database.update(Database.TB_LOAN, contentValues, Database.TB_LOAN_ID + "=" + loanId, null);
+    }
+
+    public void update(int loanId, int amount, String note) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Database.TB_LOAN_AMOUNT, amount);
+        contentValues.put(Database.TB_LOAN_NOTE, note);
+
         database.update(Database.TB_LOAN, contentValues, Database.TB_LOAN_ID + "=" + loanId, null);
     }
 }
