@@ -134,10 +134,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btnPaidMainLoan:
+                List<PeopleDTO> remove = new ArrayList<>();
+
                 for (int i = 0; i < mainLoanAdapter.checkBoxState.length; i++) {
                     if (mainLoanAdapter.checkBoxState[i]) {
-                        loanDAO.setPaidByPeopleId(peopleDTOList.get(i).getId());
+                        remove.add(peopleDTOList.get(i));
+                        mainLoanAdapter.checkBoxState[i]=false;
                     }
+                }
+
+                for (PeopleDTO peopleDTO:remove){
+                    loanDAO.setPaidByPeopleId(peopleDTO.getId());
                 }
 
                 generateList();

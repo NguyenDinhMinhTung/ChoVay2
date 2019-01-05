@@ -101,6 +101,13 @@ public class AddLoanActivity extends AppCompatActivity implements View.OnClickLi
 
         peopleDTOList = peopleDAO.getListPeople();
         groupDTOList = groupDAO.getListGroup();
+
+        String name = getIntent().getStringExtra("name");
+
+        if (name != null && !name.isEmpty()) {
+            txtName.setText(name);
+            txtName.setEnabled(false);
+        }
     }
 
     private void setEvent() {

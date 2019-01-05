@@ -1,5 +1,7 @@
 package com.example.megas.chovay;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,11 +18,14 @@ import com.example.megas.chovay.DTO.LoanDTO;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DetailLoanActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView lstDetailLoan;
     List<LoanDTO> loanDTOList;
+
+    FloatingActionButton fabAdd;
 
     Button btnPaid;
 
@@ -32,12 +37,14 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
 
     int peopleId;
 
+    String name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_loan);
 
-        String name = getIntent().getStringExtra("name");
+        name = getIntent().getStringExtra("name");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(name);
@@ -53,6 +60,7 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
         lstDetailLoan = findViewById(R.id.lstDetailLoan);
         txtSum = findViewById(R.id.txtSumDetailLoan);
         btnPaid = findViewById(R.id.btnPaidDetailLoan);
+        fabAdd = findViewById(R.id.fabAddDetailLoan);
 
         loanDAO = new LoanDAO(this);
 
@@ -61,6 +69,7 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
 
     private void setEvent() {
         btnPaid.setOnClickListener(this);
+        fabAdd.setOnClickListener(this);
     }
 
     public void refreshPay() {
@@ -115,15 +124,28 @@ public class DetailLoanActivity extends AppCompatActivity implements View.OnClic
 
         switch (viewId) {
             case R.id.btnPaidDetailLoan:
+                List<LoanDTO> remove = new ArrayList<>();
+
                 for (int i = 0; i < detailLoanAdapter.checkBoxState.length; i++) {
                     if (detailLoanAdapter.checkBoxState[i] != null && detailLoanAdapter.checkBoxState[i]) {
-                        loanDAO.setPaidByLoanId(loanDTOList.get(i).getId());
-                        loanDTOList.remove(i);
+                        detailLoanAdapter.checkBoxState[i] = false;
+                        remove.add(loanDTOList.get(i));
                     }
+                }
+
+                for (LoanDTO loanDTO : remove) {
+                    loanDAO.setPaidByLoanId(loanDTO.getId());
+                    loanDTOList.remove(loanDTO);
                 }
 
                 generateList();
                 refreshPay();
+                break;
+
+            case R.id.fabAddDetailLoan:
+                Intent intent = new Intent(this, AddLoanActivity.class);
+                intent.putExtra("name", name);
+                startActivity(intent);
                 break;
         }
     }
